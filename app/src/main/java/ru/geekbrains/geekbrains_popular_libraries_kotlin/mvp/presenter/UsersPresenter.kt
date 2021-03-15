@@ -8,7 +8,6 @@ import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.navigation.IScreens
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.presenter.list.IUsersListPresenter
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.UsersView
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.list.IUserItemView
-import ru.geekbrains.geekbrains_popular_libraries_kotlin.ui.navigation.AndroidScreens
 
 class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router, val screens:IScreens) :
     MvpPresenter<UsersView>() {
@@ -39,10 +38,14 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router, val scr
     }
 
     fun loadData() {
-        val users = usersRepo.getUsers()
-        usersListPresenter.users.clear()
-        usersListPresenter.users.addAll(users)
-        viewState.updateList()
+        usersRepo.getUsers().subscribe({
+            usersListPresenter.users.add(it)
+            viewState.updateList()
+        },{
+            println("mistake of getting users")
+        },{
+            println("getting users is completed")
+        })
     }
 
     fun backClick(): Boolean {

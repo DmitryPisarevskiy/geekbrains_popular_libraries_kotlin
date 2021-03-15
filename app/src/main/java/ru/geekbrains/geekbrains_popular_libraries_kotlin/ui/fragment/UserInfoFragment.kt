@@ -17,7 +17,10 @@ const val USER: String = "user"
 class UserInfoFragment : MvpAppCompatFragment(), UserInfoView, BackClickListener {
     private var user: GithubUser? = null
 
-        private val presenter by moxyPresenter {
+    private val presenter by moxyPresenter {
+        arguments?.let {
+            user = it.getParcelable(USER)
+        }
         UserInfoPresenter(user, App.instance.router)
     }
 
@@ -26,7 +29,6 @@ class UserInfoFragment : MvpAppCompatFragment(), UserInfoView, BackClickListener
         super.onCreate(savedInstanceState)
         arguments?.let {
             user = it.getParcelable(USER)
-            presenter.user = user
         }
     }
 
